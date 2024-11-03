@@ -2,7 +2,6 @@
 {
     public class Main : ModLoader.Mod
     {
-
         public override string ModNameID => "multilaunchpadmod";
         public override string DisplayName => "Multi Launchpad Support";
         public override string Author => "Darthan";
@@ -24,7 +23,6 @@
 
         public static ModLoader.Mod main;
         public static SFS.IO.FolderPath modFolder;
-
 
         // This initializes the patcher. This is required if you use any Harmony patches.
         static HarmonyLib.Harmony patcher;

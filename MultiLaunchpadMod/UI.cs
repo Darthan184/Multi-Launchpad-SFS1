@@ -16,22 +16,42 @@ namespace MultiLaunchpadMod
 
             private static bool _debug=false;
             private static bool _isActive=false;
-            private static SFS.UI.ModGUI.TextInput _planetName_TextInput;
+            private static System.Collections.Generic.List<string> _spaceCenterAddresses =
+                new  System.Collections.Generic.List<string>();
+            private static int _spaceCenterIndex=0;
+            private static SFS.UI.ModGUI.Label _planetName_Label;
         #endregion
 
         #region "Private methods"
-            public static void SwitchTo_Button_Click()
+            private static void Next_Button_Click()
             {
-                string planetName = PlanetName;
+                if (++_spaceCenterIndex>=_spaceCenterAddresses.Count)  _spaceCenterIndex=0;
+                _planetName_Label.Text= _spaceCenterAddresses[_spaceCenterIndex];
+                SwitchTo();
+            }
+
+            private static void Previous_Button_Click()
+            {
+                if (_spaceCenterIndex-- <=0)  _spaceCenterIndex=_spaceCenterAddresses.Count-1;
+                _planetName_Label.Text= _spaceCenterAddresses[_spaceCenterIndex];
+                SwitchTo();
+            }
+
+            private static void SwitchTo()
+            {
+                string planetName = _planetName_Label.Text;
 
                 if (!SFS.Base.planetLoader.planets.ContainsKey(planetName))
                 {
-                    SFS.UI.MsgDrawer.main.Log(string.Format("\"{0}\" Not Found", planetName));
+                    SFS.UI.MsgDrawer.main.Log(string.Format("Planet \"{0}\" Not Found", planetName));
                 }
                 else
                 {
-                    SFS.Base.planetLoader.spaceCenter.address = planetName;
-//~                     typeof(SFS.World.SpaceCenter).GetMethod("Start", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic).Invoke(SFS.Base.planetLoader.spaceCenter, null);
+                    MultiLaunchpadMod.SpaceCenterData selectedSpaceCenter =  MultiLaunchpadMod.SpaceCenterData.alternates[planetName];
+                    SFS.Base.planetLoader.spaceCenter.address = selectedSpaceCenter.address;
+                    SFS.Base.planetLoader.spaceCenter.angle = selectedSpaceCenter.angle;
+                    SFS.Base.planetLoader.spaceCenter.position_LaunchPad.horizontalPosition = selectedSpaceCenter.position_LaunchPad.horizontalPosition;
+                    SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height = selectedSpaceCenter.position_LaunchPad.height;
                     SFS.Base.sceneLoader.LoadHubScene();
                 }
             }
@@ -39,6 +59,7 @@ namespace MultiLaunchpadMod
         #endregion
 
         #region "Public properties"
+            /// <summary>True if debugging mode is on</summary>
             public static bool Debug
             {
                 get
@@ -53,23 +74,69 @@ namespace MultiLaunchpadMod
                 }
             }
 
-            public static string PlanetName
-            {
-                get
-                {
-                    return _planetName_TextInput.Text;
-                }
-                set
-                {
-                    _planetName_TextInput.Text=value;
-                }
-            }
+            /// <summary>True if the GUI is currently active</summary>
             public static bool IsActive
             { get { return _isActive;}}
 
         #endregion
 
         #region "Public methods"
+            /// <summary>(re-)Load the list of planets with space centers</summary>
+            public static void LoadPlanetsList()
+            {
+                if (_isActive)
+                {
+                    string tracePoint="D-01";
+                    try
+                    {
+                        // add or update the current space center
+                        MultiLaunchpadMod.SpaceCenterData thisSpaceCenter;
+                        tracePoint="D-02";
+                        if (!MultiLaunchpadMod.SpaceCenterData.alternates.ContainsKey(SFS.Base.planetLoader.spaceCenter.address))
+                        {
+                            tracePoint="D-03";
+                            thisSpaceCenter = new MultiLaunchpadMod.SpaceCenterData();
+                            thisSpaceCenter.address =SFS.Base.planetLoader.spaceCenter.address;
+                            MultiLaunchpadMod.SpaceCenterData.alternates[SFS.Base.planetLoader.spaceCenter.address]=thisSpaceCenter;
+                        }
+                        else
+                        {
+                            tracePoint="D-04";
+                            thisSpaceCenter = MultiLaunchpadMod.SpaceCenterData.alternates[SFS.Base.planetLoader.spaceCenter.address];
+                        }
+                        thisSpaceCenter.enabled=1;
+                        thisSpaceCenter.angle=SFS.Base.planetLoader.spaceCenter.angle;
+                        thisSpaceCenter.position_LaunchPad.horizontalPosition= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.horizontalPosition;
+                        thisSpaceCenter.position_LaunchPad.height= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height;
+
+                        // determine the list of available space center names and the index corresponding to the current one
+                        _spaceCenterIndex=0;
+                        _spaceCenterAddresses.Clear();
+
+                        foreach (string oneSpaceCenterAddress in MultiLaunchpadMod.SpaceCenterData.alternates.Keys)
+                        {
+                            tracePoint="D-05";
+                            if
+                                (
+                                    MultiLaunchpadMod.SpaceCenterData.alternates.ContainsKey(oneSpaceCenterAddress)
+                                    && MultiLaunchpadMod.SpaceCenterData.alternates[oneSpaceCenterAddress].enabled==1
+                                )
+                            {
+                                tracePoint="D-06";
+                                _spaceCenterAddresses.Add(oneSpaceCenterAddress);
+                                if (oneSpaceCenterAddress==SFS.Base.planetLoader.spaceCenter.address) _spaceCenterIndex=_spaceCenterAddresses.Count-1;
+                            }
+                        }
+                        _planetName_Label.Text=SFS.Base.planetLoader.spaceCenter.address;
+                    }
+                    catch (System.Exception excp)
+                    {
+                        UnityEngine.Debug.LogErrorFormat("[MultiLaunchpadMod.UI.LoadPlanetsList-{0}] {1}", tracePoint ,excp.ToString());
+                    }
+                }
+            }
+
+            /// <summary>Show the GUI</summary>
             public static void ShowGUI()
             {
                 _isActive = false;
@@ -87,11 +154,16 @@ namespace MultiLaunchpadMod
                     MultiLaunchpadMod.SettingsManager.settings.windowPosition = UnityEngine.Vector2Int.RoundToInt(window.Position);
                     MultiLaunchpadMod.SettingsManager.Save();
                 };
-                _planetName_TextInput = SFS.UI.ModGUI.Builder.CreateTextInput(window, 180,30,0,0,SFS.Base.planetLoader.spaceCenter.address);
-                SFS.UI.ModGUI.Builder.CreateButton(window,120,30,0,0,SwitchTo_Button_Click,"Switch To");
+
+                SFS.UI.ModGUI.Builder.CreateButton(window,30,30,0,0,Previous_Button_Click,"<");
+                _planetName_Label = SFS.UI.ModGUI.Builder.CreateLabel(window, 270,30,0,0,SFS.Base.planetLoader.spaceCenter.address);
+                SFS.UI.ModGUI.Builder.CreateButton(window,30,30,0,0,Next_Button_Click,">");
+
                 _isActive = true;
+                LoadPlanetsList();
             }
 
+            /// <summary>Note that the GIU is no longer active</summary>
             public static void GUIInActive()
             {
                 _isActive = false;

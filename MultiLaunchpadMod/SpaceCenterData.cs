@@ -1,0 +1,42 @@
+﻿namespace MultiLaunchpadMod
+{
+    [System.Serializable]
+    public class SpaceCenterData
+    {
+        [System.Serializable]
+        public class BuildingPosition
+        {
+            /// <summary>Horizontal position the launch pad relative to the space center (meters) +ve right</summary>
+            public double horizontalPosition=365.0;
+
+            /// <summary>Vertical position the launch pad relative to the space center (meters) +ve up</summary>
+            public double height=26.2;
+
+            public BuildingPosition(double horizontalPosition_P, double height_P)
+            {
+                height=height_P;
+                horizontalPosition=horizontalPosition_P;
+            }
+        }
+
+        /// <summary>The current enable status</summary>
+        // 0 - disabled
+        // 1 - enabled
+        // 2 - enabled when landed (future feature)
+        // ... others may follow
+        public int enabled=1;
+
+        /// <summary>The name of the planet the space center is on</summary>
+        public string address = "Earth";
+
+        /// <summary>The location on the planet (in degrees) of the space center (not fully implemented by SFS, location is, orientation is not)</summary>
+        public double angle = 90.0;
+
+        /// <summary>Position of the launch pad relative to the space center (meters)</summary>
+        public BuildingPosition position_LaunchPad = new BuildingPosition(365.0, 26.2);
+
+        /// <summary>All the possible space centers, indexed by planet name</summary>
+        public static System.Collections.Generic.SortedDictionary<string,MultiLaunchpadMod.SpaceCenterData> alternates =
+            new  System.Collections.Generic.SortedDictionary<string, MultiLaunchpadMod.SpaceCenterData>();
+    }
+}
