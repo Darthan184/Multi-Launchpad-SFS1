@@ -89,42 +89,78 @@ namespace MultiLaunchpadMod
                     string tracePoint="D-01";
                     try
                     {
-                        // add or update the current space center
-                        MultiLaunchpadMod.SpaceCenterData thisSpaceCenter;
-                        tracePoint="D-02";
-                        if (!MultiLaunchpadMod.SpaceCenterData.alternates.ContainsKey(SFS.Base.planetLoader.spaceCenter.address))
-                        {
-                            tracePoint="D-03";
-                            thisSpaceCenter = new MultiLaunchpadMod.SpaceCenterData();
-                            thisSpaceCenter.address =SFS.Base.planetLoader.spaceCenter.address;
-                            MultiLaunchpadMod.SpaceCenterData.alternates[SFS.Base.planetLoader.spaceCenter.address]=thisSpaceCenter;
-                        }
-                        else
-                        {
-                            tracePoint="D-04";
-                            thisSpaceCenter = MultiLaunchpadMod.SpaceCenterData.alternates[SFS.Base.planetLoader.spaceCenter.address];
-                        }
-                        thisSpaceCenter.enabled=1;
-                        thisSpaceCenter.angle=SFS.Base.planetLoader.spaceCenter.angle;
-                        thisSpaceCenter.position_LaunchPad.horizontalPosition= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.horizontalPosition;
-                        thisSpaceCenter.position_LaunchPad.height= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height;
-
                         // determine the list of available space center names and the index corresponding to the current one
+                        System.Collections.Generic.HashSet<string> completeChallenges = null;
                         _spaceCenterIndex=0;
                         _spaceCenterAddresses.Clear();
 
+                        if
+                            (
+                                SFS.Base.worldBase!=null
+                                && SFS.Base.worldBase.paths!=null
+                                && SFS.Base.worldBase.paths.worldPersistentPath!=null
+                            )
+                        {
+                            SFS.IO.FilePath filePath = SFS.Base.worldBase.paths.worldPersistentPath.ExtendToFile("Challenges.txt");
+                            System.Collections.Generic.List<string> completeChallenges_List = new System.Collections.Generic.List<string>();
+                            if
+                                (
+                                    !filePath.FileExists()
+                                    || !SFS.Parsers.Json.JsonWrapper.TryLoadJson<System.Collections.Generic.List<string>>(filePath, out completeChallenges_List)
+                                )
+                            {
+                                UnityEngine.Debug.LogError("[MultiLaunchpadMod.UI.LoadPlanetsList] Failed to load Challenges.txt");
+                            }
+                            else
+                            {
+                                completeChallenges = completeChallenges_List.ToHashSet();
+                            }
+                        }
+                        else
+                        {
+                            UnityEngine.Debug.LogError("[MultiLaunchpadMod.UI.LoadPlanetsList] Failed to determine SFS.Base.worldBase.paths.worldPersistentPath");
+                        }
+
                         foreach (string oneSpaceCenterAddress in MultiLaunchpadMod.SpaceCenterData.alternates.Keys)
                         {
-                            tracePoint="D-05";
+                            tracePoint="D-02";
                             if
                                 (
                                     MultiLaunchpadMod.SpaceCenterData.alternates.ContainsKey(oneSpaceCenterAddress)
-                                    && MultiLaunchpadMod.SpaceCenterData.alternates[oneSpaceCenterAddress].enabled==1
+                                    && MultiLaunchpadMod.SpaceCenterData.alternates[oneSpaceCenterAddress].enabled>=1
                                 )
                             {
-                                tracePoint="D-06";
-                                _spaceCenterAddresses.Add(oneSpaceCenterAddress);
-                                if (oneSpaceCenterAddress==SFS.Base.planetLoader.spaceCenter.address) _spaceCenterIndex=_spaceCenterAddresses.Count-1;
+                                tracePoint="D-03";
+                                bool isEnabled=false;
+
+                                switch (MultiLaunchpadMod.SpaceCenterData.alternates[oneSpaceCenterAddress].enabled)
+                                {
+                                    case 1:
+                                        isEnabled=true;
+                                    break;
+
+                                    case 2:
+                                    {
+                                        if (completeChallenges != null)
+                                        {
+                                            isEnabled=completeChallenges.Contains("Land_" + oneSpaceCenterAddress);
+                                        }
+                                        else
+                                        {
+                                            isEnabled=false;
+                                        }
+                                    }
+                                    break;
+
+                                    default:
+                                        isEnabled=false;
+                                    break;
+                                }
+                                if (isEnabled)
+                                {
+                                    _spaceCenterAddresses.Add(oneSpaceCenterAddress);
+                                    if (oneSpaceCenterAddress==SFS.Base.planetLoader.spaceCenter.address) _spaceCenterIndex=_spaceCenterAddresses.Count-1;
+                                }
                             }
                         }
                         _planetName_Label.Text=SFS.Base.planetLoader.spaceCenter.address;
