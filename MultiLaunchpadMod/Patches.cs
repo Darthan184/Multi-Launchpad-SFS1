@@ -30,12 +30,41 @@ namespace MultiLaunchpadMod
 
         static void Postfix(System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData> __state)
         {
+            MultiLaunchpadMod.SpaceCenterData.alternates.Clear();
+
             // copy the list as read into a dictionary, ignoring unknown planets
             foreach (MultiLaunchpadMod.SpaceCenterData oneSpaceCenter in __state)
             {
                 if (SFS.Base.planetLoader.planets.ContainsKey(oneSpaceCenter.address))
                 {
-                    MultiLaunchpadMod.SpaceCenterData.alternates[oneSpaceCenter.address]=oneSpaceCenter;
+                    bool canAdd=false;
+
+                    if (SFS.Base.worldBase!=null && SFS.Base.worldBase.settings!=null && SFS.Base.worldBase.settings.difficulty!=null)
+                    {
+                        switch (SFS.Base.worldBase.settings.difficulty.difficulty)
+                        {
+                            case SFS.WorldBase.Difficulty.DifficultyType.Normal:
+                                canAdd=(oneSpaceCenter.difficulty.ToLower()=="all" || oneSpaceCenter.difficulty.ToLower()=="normal" );
+                            break;
+
+                            case SFS.WorldBase.Difficulty.DifficultyType.Hard:
+                                canAdd=(oneSpaceCenter.difficulty.ToLower()=="all" || oneSpaceCenter.difficulty.ToLower()=="hard" );
+                            break;
+
+                            case SFS.WorldBase.Difficulty.DifficultyType.Realistic:
+                                canAdd=(oneSpaceCenter.difficulty.ToLower()=="all" || oneSpaceCenter.difficulty.ToLower()=="realistic" );
+                            break;
+
+                            default:
+                                canAdd=(oneSpaceCenter.difficulty.ToLower()=="all");
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        canAdd=(oneSpaceCenter.difficulty.ToLower()=="all");
+                    }
+                    if (canAdd) MultiLaunchpadMod.SpaceCenterData.alternates[oneSpaceCenter.address]=oneSpaceCenter;
                 }
             }
 

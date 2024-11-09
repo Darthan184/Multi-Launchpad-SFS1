@@ -19,12 +19,17 @@
             }
         }
 
-        /// <summary>The current enable status</summary>
-        // 0 - disabled
-        // 1 - enabled
-        // 2 - enabled when landed (future feature)
-        // ... others may follow
+        /// <summary>
+        /// The current enable status:
+        /// 0 - disabled (inteded to be set by other mods)
+        /// 1 - enabled
+        /// 2 - enabled when landed on planet challenge accomplished
+        /// ... others may follow
+        /// </summary>
         public int enabled=1;
+
+        /// <summary>The difficulty that this space center is enabled for: "all", "normal", "hard", "realistic"</summary>
+        public string difficulty = "all";
 
         /// <summary>The name of the planet the space center is on</summary>
         public string address = "Earth";
