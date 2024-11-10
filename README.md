@@ -96,7 +96,7 @@ The space center screen sometimes looks a little odd, expecially for planets/moo
 
 ## Example
 
-This is an Alternate_Space_Center_Data.txt for the default solar system. It defines alternate space centers for every planet and moon apart from Captured Asteroid, Deimos, Phobos and Jupiter. Each space center is enabled if the 'Land on "planet name" and return safely' challenge has been accomplished. It should work at every difficultly. 
+This is an Alternate_Space_Center_Data.txt for the default solar system. It defines alternate space centers for every planet and moon apart from Captured Asteroid, Deimos, Phobos and Jupiter. Each space center is enabled if the 'Land on "planet name" and return safely' challenge has been accomplished. It should work at every difficulty. 
 
 ```
 [
