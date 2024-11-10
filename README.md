@@ -58,13 +58,13 @@ The file is essentially a json array of space center definitions with a couple o
 
 0 - never enabled
 
-1 - always enabled (default if this field is omitted)
+1 - always enabled (default value if this field is omitted)
 
 2 - enabled if the 'land on' challenge has been completed for this planet
 
 **"difficulty":**
 
-"all" - used for all difficulties (default if this field is omitted)
+"all" - used for all difficulties (default value  if this field is omitted)
 
 "normal" - only used in the 'normal' difficulty
 
@@ -80,9 +80,9 @@ If the mod is installed a window will appear in the space center view:
 
 The '\<' and '>' buttons will switch the space center between the original (as specified in Space_Center_Data.txt) and the enabled alternates.
 
-## Limitations
+## Known Limitations
 
-Only the selected space center will exist in the game. Switching to a different one effectively 'teleports' the space center to a differrent location. As a result, if you launch a rocket, leave it on the launchpad, change the space center and resume game, the rocket will fall to the ground.
+Only the selected space center will exist in the game. Switching to a different one effectively 'teleports' the space center to a different location. As a result, if you launch a rocket, leave it on the launchpad, change the space center and resume game, the rocket will fall to the ground.
 
 The space center that is selected when entering a world is always the original (Space_Center_Data.txt) one.
 
@@ -90,11 +90,13 @@ Challenges that specify '... and return safely' always expect you to return to t
 
 You can only recover at the *currently selected* space center's  planet. So to recover the rocket after completing a challenge you need to ensure that the currently selected space center is the original space center. Note, you do get a 'Recover' button if you land at the currently selected space center's planet when it differs from the original, but it does not seem to affect the challenges.
 
-The "angle" field works as well as the "angle" field in Space_Center_Data.txt . It specifies the position of the space center but not its orientation, so if moved away from 90 the launch pad will appear tilted. It is best for to try and move it mot that a couple of degrees.
+The "angle" field works as well as the "angle" field in Space_Center_Data.txt . It specifies the position of the space center but not its orientation, so if moved away from 90 the launch pad will appear tilted. It is best to try and move it no more that a couple of degrees.
+
+The space center screen sometimes looks a little odd, expecially for planets/moons without an atmosphere.
 
 ## Example
 
-For the default solar system:
+This is an Alternate_Space_Center_Data.txt for the default solar system. It defines alternate space centers for every planet and moon apart from Captured Asteroid, Deimos, Phobos and Jupiter. Each space center is enabled if the 'Land on <<planet>> and return safely' challenge has been accomplished. It should work at every difficultly. 
 
 ```
 [

@@ -4,7 +4,7 @@
     public class UserSettings
     {
         public bool debug = false;
-        public UnityEngine.Vector2Int windowPosition = new UnityEngine.Vector2Int( -850, -500 );
+        public UnityEngine.Vector2Int windowPosition = new UnityEngine.Vector2Int( 20, 637 );
     }
 
     public static class SettingsManager
