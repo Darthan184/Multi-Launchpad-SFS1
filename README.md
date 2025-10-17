@@ -6,11 +6,23 @@ To specify them you need to add an Alternate_Space_Center_Data.txt file:
 
 ![File Directory](Images/Directory.png)
 
-The file is essentially a json array of space center definitions with a couple of optional extra fields:
+The file is essentially a json array of space center definitions with a three of optional extra fields:
 
 ```
 [
     {
+      "enabled": 1,
+      "difficulty":"all",
+      "address": "Earth",
+      "location": "Alternate",
+      "angle": 91.0,
+      "position_LaunchPad": {
+        "horizontalPosition": 365.0,
+        "height": 26.2
+      }
+    }
+    ,{
+
       "enabled": 2,
       "difficulty":"normal",
       "address": "Moon",
@@ -72,13 +84,17 @@ The file is essentially a json array of space center definitions with a couple o
 
 "realistic" - only used in 'realistic' difficulty
 
+**"location":**
+
+Specifies the name of an alternate location on the same planet. If omitted will use the name "(default)"
+
 ## UI
 
 If the mod is installed a window will appear in the space center view:
 
 ![UI](Images/UI.png)
 
-The '\<' and '>' buttons will switch the space center between the original (as specified in Space_Center_Data.txt) and the enabled alternates.
+The '\<' and '>' buttons at the top will switch the space center between the original (as specified in Space_Center_Data.txt) and the enabled alternates. The '\<' and '>' buttons at the bottom (only appear when the are multiple location) with switch between locations on the planet.
 
 ## Known Limitations
 
@@ -86,21 +102,30 @@ Only the selected space center will exist in the game. Switching to a different 
 
 The space center that is selected when entering a world is always the original (Space_Center_Data.txt) one.
 
-Challenges that specify '... and return safely' always expect you to return to the original space center planet - wherever the rocket is launched from.
+You can only recover at the *currently selected* space center's  planet.
 
-You can only recover at the *currently selected* space center's  planet. So to recover the rocket after completing a challenge you need to ensure that the currently selected space center is the original space center. Note, you do get a 'Recover' button if you land at the currently selected space center's planet when it differs from the original, but it does not seem to affect the challenges.
-
-The "angle" field works as well as the "angle" field in Space_Center_Data.txt . It specifies the position of the space center but not its orientation, so if moved away from 90 the launch pad will appear tilted. It is best to try and move it no more that a couple of degrees.
+The "angle" field works as well as the "angle" field in Space_Center_Data.txt does. It specifies the position of the space center but not its orientation, so if moved away from 90 the launch pad will appear tilted. It is best to try and move it no more that a couple of degrees. A result of this is that any alternate locations need to be close to the 90 degree position - how close depends on how much tilt you can live with.
 
 The space center screen sometimes looks a little odd, expecially for planets/moons without an atmosphere.
 
 ## Example
 
-This is an Alternate_Space_Center_Data.txt for the default solar system. It defines alternate space centers for every planet and moon apart from Captured Asteroid, Deimos, Phobos and Jupiter. Each space center is enabled if the 'Land on "planet name" and return safely' challenge has been accomplished. It should work at every difficulty. 
+This is an Alternate_Space_Center_Data.txt for the default solar system with an alternate Earth launch pad 1 degree West (about 6km in Normal) from the default launch pad. It defines alternate space centers for every planet and moon apart from Captured Asteroid, Deimos, Phobos and Jupiter. Each space center is enabled if the 'Land on "planet name" and return safely' challenge has been accomplished. It should work at every difficulty. 
 
 ```
 [
     {
+      "enabled": 1,
+      "difficulty":"all",
+      "address": "Earth",
+      "location": "Alternate",
+      "angle": 91.0,
+      "position_LaunchPad": {
+        "horizontalPosition": 365.0,
+        "height": 26.2
+      }
+    }
+    ,{
       "enabled": 2,
       "difficulty":"normal",
       "address": "Moon",

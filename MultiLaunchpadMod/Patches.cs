@@ -64,26 +64,41 @@ namespace MultiLaunchpadMod
                     {
                         canAdd=(oneSpaceCenter.difficulty.ToLower()=="all");
                     }
-                    if (canAdd) MultiLaunchpadMod.SpaceCenterData.alternates[oneSpaceCenter.address]=oneSpaceCenter;
+                    if (canAdd)
+                    {
+                        if (!MultiLaunchpadMod.SpaceCenterData.alternates.ContainsKey(oneSpaceCenter.address))
+                        {
+                            MultiLaunchpadMod.SpaceCenterData.alternates[oneSpaceCenter.address] =
+                                new  System.Collections.Generic.SortedDictionary<string, MultiLaunchpadMod.SpaceCenterData>();
+                        }
+                        MultiLaunchpadMod.SpaceCenterData.alternates[oneSpaceCenter.address][oneSpaceCenter.location]=oneSpaceCenter;
+                    }
                 }
             }
 
-            // add or update the default space center
-            MultiLaunchpadMod.SpaceCenterData thisSpaceCenter;
+            // add or update the default space center and the current space center
             if (!MultiLaunchpadMod.SpaceCenterData.alternates.ContainsKey(SFS.Base.planetLoader.spaceCenter.address))
             {
-                thisSpaceCenter = new MultiLaunchpadMod.SpaceCenterData();
-                thisSpaceCenter.address =SFS.Base.planetLoader.spaceCenter.address;
-                MultiLaunchpadMod.SpaceCenterData.alternates[SFS.Base.planetLoader.spaceCenter.address]=thisSpaceCenter;
+                MultiLaunchpadMod.SpaceCenterData.current = new MultiLaunchpadMod.SpaceCenterData();
+                MultiLaunchpadMod.SpaceCenterData.current.address =SFS.Base.planetLoader.spaceCenter.address;
+                MultiLaunchpadMod.SpaceCenterData.current.location = "(default)";
+                MultiLaunchpadMod.SpaceCenterData.alternates[MultiLaunchpadMod.SpaceCenterData.current.address][MultiLaunchpadMod.SpaceCenterData.current.location]=MultiLaunchpadMod.SpaceCenterData.current;
+            }
+            else if (! MultiLaunchpadMod.SpaceCenterData.alternates[SFS.Base.planetLoader.spaceCenter.address].ContainsKey("(default)"))
+            {
+                MultiLaunchpadMod.SpaceCenterData.current = new MultiLaunchpadMod.SpaceCenterData();
+                MultiLaunchpadMod.SpaceCenterData.current.address =SFS.Base.planetLoader.spaceCenter.address;
+                MultiLaunchpadMod.SpaceCenterData.current.location = "(default)";
+                MultiLaunchpadMod.SpaceCenterData.alternates[MultiLaunchpadMod.SpaceCenterData.current.address][MultiLaunchpadMod.SpaceCenterData.current.location]=MultiLaunchpadMod.SpaceCenterData.current;
             }
             else
             {
-                thisSpaceCenter = MultiLaunchpadMod.SpaceCenterData.alternates[SFS.Base.planetLoader.spaceCenter.address];
+                MultiLaunchpadMod.SpaceCenterData.current = MultiLaunchpadMod.SpaceCenterData.alternates[SFS.Base.planetLoader.spaceCenter.address]["(default)"];
             }
-            thisSpaceCenter.enabled=1;
-            thisSpaceCenter.angle=SFS.Base.planetLoader.spaceCenter.angle;
-            thisSpaceCenter.position_LaunchPad.horizontalPosition= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.horizontalPosition;
-            thisSpaceCenter.position_LaunchPad.height= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height;
+            MultiLaunchpadMod.SpaceCenterData.current.enabled=1;
+            MultiLaunchpadMod.SpaceCenterData.current.angle=SFS.Base.planetLoader.spaceCenter.angle;
+            MultiLaunchpadMod.SpaceCenterData.current.position_LaunchPad.horizontalPosition= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.horizontalPosition;
+            MultiLaunchpadMod.SpaceCenterData.current.position_LaunchPad.height= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height;
         }
     }
 }
