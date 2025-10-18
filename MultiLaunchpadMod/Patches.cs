@@ -82,6 +82,8 @@ namespace MultiLaunchpadMod
                 MultiLaunchpadMod.SpaceCenterData.current = new MultiLaunchpadMod.SpaceCenterData();
                 MultiLaunchpadMod.SpaceCenterData.current.address =SFS.Base.planetLoader.spaceCenter.address;
                 MultiLaunchpadMod.SpaceCenterData.current.location = "(default)";
+                MultiLaunchpadMod.SpaceCenterData.alternates[MultiLaunchpadMod.SpaceCenterData.current.address] =
+                    new  System.Collections.Generic.SortedDictionary<string, MultiLaunchpadMod.SpaceCenterData>();
                 MultiLaunchpadMod.SpaceCenterData.alternates[MultiLaunchpadMod.SpaceCenterData.current.address][MultiLaunchpadMod.SpaceCenterData.current.location]=MultiLaunchpadMod.SpaceCenterData.current;
             }
             else if (! MultiLaunchpadMod.SpaceCenterData.alternates[SFS.Base.planetLoader.spaceCenter.address].ContainsKey("(default)"))
