@@ -66,13 +66,33 @@ The file is essentially a json array of space center definitions with a three of
 
 ## Fields 
 
+**"address":**
+
+Specifies the name of the planet where the space center is. If omitted will be for all planets with terrain. If an alternate launchpad is specfied more than once, the last one specified will be used.
+
+**"inclInsignificant"**
+
+When no address is specified, include planets that are not marked as 'significant', default false.
+
+**"exclude"**;
+
+When no address is specified, exclude planets in this array of names
+        
+**"location":**
+
+Specifies the name of an alternate location on the same planet. If omitted will use the name "(default)".
+
 **"enabled":**
 
 0 - never enabled
 
 1 - always enabled (default value if this field is omitted)
 
-2 - enabled if the 'land on' challenge has been completed for this planet
+2 - enabled when a challenge is accomplished. N.B. if there is a planet called "Earth", a 'return safely' challenge will only be counted when recovered on Earth. Otherwise it is counted when the rocket is recovered at the planet with the current launchpad.
+
+**"challenge_id":**
+
+The challenge id to be used with enabled=2, if omitted will be the "landed on planet and returned safely" challenge. If no value was specified for "address" the string {planet} will be replaced with the name of the planet.
 
 **"difficulty":**
 
@@ -84,9 +104,21 @@ The file is essentially a json array of space center definitions with a three of
 
 "realistic" - only used in 'realistic' difficulty
 
-**"location":**
+**"angle":**
 
-Specifies the name of an alternate location on the same planet. If omitted will use the name "(default)"
+The location on the planet (in degrees) of the space center (not fully implemented by SFS, location is, orientation is not), default 90.
+
+**"position_LaunchPad":**
+
+Position of the launch pad. If omitted will use default values for its fields:
+
+    **"horizontalPosition"**
+    
+    Horizontal position the launch pad relative to the space center (meters) +ve right, default 365
+
+    **"height"**
+    
+    Vertical position of the launch pad relative to the planet radius +ve up, if omitted, will attempt to find the best value
 
 ## UI
 
@@ -94,11 +126,11 @@ If the mod is installed a window will appear in the space center view:
 
 ![UI](Images/UI.png)
 
-The '\<' and '>' buttons at the top will switch the space center between the original (as specified in Space_Center_Data.txt) and the enabled alternates. The '\<' and '>' buttons at the bottom (only appear when the are multiple location) with switch between locations on the planet.
+The '\<' and '>' buttons at the top will switch the space center between the original (as specified in Space_Center_Data.txt) and the enabled alternates. The '\<' and '>' buttons at the bottom (only appear when the are multiple locations) will switch between locations on the planet.
 
 ## Known Limitations
 
-Only the selected space center will exist in the game. Switching to a different one effectively 'teleports' the space center to a different location. As a result, if you launch a rocket, leave it on the launchpad, change the space center and resume game, the rocket will fall to the ground.
+Only the selected space center will exist in the game. Switching to a different one effectively 'teleports' the space center to a different location. As a result, if you launch a rocket, leave it on the launchpad, change the space center and resume the game, the rocket will fall to the ground.
 
 The space center that is selected when entering a world is always the original (Space_Center_Data.txt) one.
 

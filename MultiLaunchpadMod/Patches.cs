@@ -40,6 +40,39 @@ namespace MultiLaunchpadMod
         static void Postfix(System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData> __state)
         {
             MultiLaunchpadMod.SpaceCenterData.alternates.Clear();
+            System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData> expandableSpaceCenters=
+                new System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData>();
+
+            // expand address:"*"
+            foreach (MultiLaunchpadMod.SpaceCenterData oneSpaceCenter in __state)
+                if (oneSpaceCenter.address=="*")
+                {
+                    expandableSpaceCenters.Add(oneSpaceCenter);
+                }
+
+            foreach (MultiLaunchpadMod.SpaceCenterData oneSpaceCenter in expandableSpaceCenters)
+            {
+                __state.Remove(oneSpaceCenter);
+
+                foreach (SFS.WorldBase.Planet onePlanet in SFS.Base.planetLoader.planets.Values)
+                    if
+                        (
+                            onePlanet.data.hasTerrain
+                            && (oneSpaceCenter.inclInsignificant || onePlanet.data.basics.significant)
+                            && !oneSpaceCenter.exclude.Contains(onePlanet.codeName)
+                        )
+                    {
+                        MultiLaunchpadMod.SpaceCenterData newSpaceCenter = new MultiLaunchpadMod.SpaceCenterData();
+                        newSpaceCenter.address = onePlanet.codeName;
+                        newSpaceCenter.enabled = oneSpaceCenter.enabled;
+                        newSpaceCenter.challenge_id = oneSpaceCenter.challenge_id.Replace("{planet}",onePlanet.codeName);
+                        newSpaceCenter.difficulty=oneSpaceCenter.difficulty;
+                        newSpaceCenter.angle=oneSpaceCenter.angle;
+                        newSpaceCenter.position_LaunchPad=new MultiLaunchpadMod.SpaceCenterData.BuildingPosition(oneSpaceCenter.position_LaunchPad);
+                        __state.Add(newSpaceCenter);
+                    }
+
+            }
 
             // copy the list as read into a dictionary, ignoring unknown planets
             foreach (MultiLaunchpadMod.SpaceCenterData oneSpaceCenter in __state)
