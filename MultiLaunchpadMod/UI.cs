@@ -84,7 +84,34 @@ namespace MultiLaunchpadMod
                     SFS.Base.planetLoader.spaceCenter.address = selectedSpaceCenter.address;
                     SFS.Base.planetLoader.spaceCenter.angle = selectedSpaceCenter.angle;
                     SFS.Base.planetLoader.spaceCenter.position_LaunchPad.horizontalPosition = selectedSpaceCenter.position_LaunchPad.horizontalPosition;
-                    SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height = selectedSpaceCenter.position_LaunchPad.height;
+
+                    if (selectedSpaceCenter.position_LaunchPad.height==null)
+                    {
+                        SFS.WorldBase.Planet planet = SFS.Base.planetLoader.planets[planetName];
+                        double edgeOffset = 50 / planet.Radius;
+                        double hubOffset = selectedSpaceCenter.position_LaunchPad.horizontalPosition / planet.Radius;
+                        double[] terrain= planet.GetTerrainHeightAtAngles
+                            (
+                                (selectedSpaceCenter.angle*System.Math.PI / 180) - edgeOffset - hubOffset
+                                ,(selectedSpaceCenter.angle*System.Math.PI / 180) -edgeOffset*0.5 - hubOffset
+                                ,(selectedSpaceCenter.angle*System.Math.PI / 180) - hubOffset
+                                ,(selectedSpaceCenter.angle*System.Math.PI / 180) +edgeOffset*0.5 - hubOffset
+                                ,(selectedSpaceCenter.angle*System.Math.PI / 180) +edgeOffset - hubOffset
+                            );
+                        double minTerrain = double.MaxValue;
+                        double maxTerrain = double.MinValue;
+
+                        foreach (double oneValue in terrain )
+                        {
+                            if (minTerrain>oneValue) minTerrain=oneValue;
+                            if (maxTerrain<oneValue) maxTerrain=oneValue;
+                        }
+                        SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height = System.Math.Max(minTerrain+8,maxTerrain);
+                    }
+                    else
+                    {
+                        SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height = (double)selectedSpaceCenter.position_LaunchPad.height;
+                    }
                     SFS.Base.sceneLoader.LoadHubScene();
                 }
             }
@@ -137,13 +164,14 @@ namespace MultiLaunchpadMod
                         {
                             SFS.IO.FilePath filePath = SFS.Base.worldBase.paths.worldPersistentPath.ExtendToFile("Challenges.txt");
                             System.Collections.Generic.List<string> completeChallenges_List = new System.Collections.Generic.List<string>();
+
                             if
                                 (
-                                    !filePath.FileExists()
-                                    || !SFS.Parsers.Json.JsonWrapper.TryLoadJson<System.Collections.Generic.List<string>>(filePath, out completeChallenges_List)
+                                    filePath.FileExists()
+                                    && !SFS.Parsers.Json.JsonWrapper.TryLoadJson<System.Collections.Generic.List<string>>(filePath, out completeChallenges_List)
                                 )
                             {
-                                UnityEngine.Debug.LogError("[MultiLaunchpadMod.UI.LoadPlanetsList] Failed to load Challenges.txt");
+                                UnityEngine.Debug.LogError("[MultiLaunchpadMod.UI.LoadPlanetsList] Invalid Challenges.txt file");
                             }
                             else
                             {
@@ -167,8 +195,9 @@ namespace MultiLaunchpadMod
                                 {
                                     tracePoint="D-03";
                                     bool isEnabled=false;
+                                    MultiLaunchpadMod.SpaceCenterData spaceCenter = MultiLaunchpadMod.SpaceCenterData.alternates[onePlanetName][oneLocationName];
 
-                                    switch (MultiLaunchpadMod.SpaceCenterData.alternates[onePlanetName][oneLocationName].enabled)
+                                    switch (spaceCenter.enabled)
                                     {
                                         case 1:
                                             isEnabled=true;
@@ -176,13 +205,24 @@ namespace MultiLaunchpadMod
 
                                         case 2:
                                         {
-                                            if (completeChallenges != null)
+                                            if (completeChallenges == null)
                                             {
-                                                isEnabled=completeChallenges.Contains("Land_" + onePlanetName);
+                                                isEnabled=false;
+                                            }
+                                            else if (string.IsNullOrWhiteSpace(spaceCenter.challenge_id))
+                                            {
+                                                if (onePlanetName=="Venus" || onePlanetName=="Mercury")
+                                                {
+                                                    isEnabled=completeChallenges.Contains(onePlanetName + "_Landing");
+                                                }
+                                                else
+                                                {
+                                                    isEnabled=completeChallenges.Contains("Land_" + onePlanetName);
+                                                }
                                             }
                                             else
                                             {
-                                                isEnabled=false;
+                                                isEnabled=completeChallenges.Contains(spaceCenter.challenge_id);
                                             }
                                         }
                                         break;

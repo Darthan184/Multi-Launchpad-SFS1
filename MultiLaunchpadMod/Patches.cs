@@ -8,7 +8,8 @@ namespace MultiLaunchpadMod
     {
         static void Prefix
             (
-                SFS.WorldBase.WorldSettings settings, SFS.I_MsgLogger log
+                SFS.WorldBase.WorldSettings settings
+                , SFS.I_MsgLogger log
                 , System.Action<bool> callback
                 , out System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData> __state
             )
@@ -20,9 +21,17 @@ namespace MultiLaunchpadMod
             {
                 SFS.IO.FilePath filePath = FileLocations.SolarSystemsFolder.Extend(solarSystem.name).ExtendToFile("Alternate_Space_Center_Data.txt");
 
-                if (filePath.FileExists() && !SFS.Parsers.Json.JsonWrapper.TryLoadJson<System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData>>(filePath, out __state))
+                try
                 {
-                    log.Log("MultiLaunchpadMod: Solar system \"" + solarSystem.name + "\" has an invalid Alternate_Space_Center_Data.txt file");
+                    if (filePath.FileExists() && !SFS.Parsers.Json.JsonWrapper.TryLoadJson<System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData>>(filePath, out __state))
+                    {
+                        UnityEngine.Debug.LogError("MultiLaunchpadMod: Solar system \"" + solarSystem.name + "\" has an invalid Alternate_Space_Center_Data.txt file");
+                        __state.Clear();
+                    }
+                }
+                catch (System.Exception excp)
+                {
+                    UnityEngine.Debug.LogError("MultiLaunchpadMod: Solar system \"" + solarSystem.name + "\" has an invalid Alternate_Space_Center_Data.txt file: " + excp.Message);
                     __state.Clear();
                 }
             }
