@@ -6,8 +6,8 @@
         [System.Serializable]
         public class BuildingPosition
         {
-            /// <summary>Horizontal position the launch pad relative to the space center (meters) +ve right, default 365</summary>
-            public double horizontalPosition=365.0;
+            /// <summary>Horizontal position the launch pad relative to the space center (meters) +ve right, default 0</summary>
+            public double horizontalPosition=0.0;
 
             /// <summary>Vertical position of the launch pad relative to the planet radius +ve up, if omitted attempt to find the best value</summary>
             public double? height=null;
@@ -19,7 +19,7 @@
             }
 
             public BuildingPosition(BuildingPosition other): this(other.horizontalPosition, other.height) {}
-            public BuildingPosition(): this(365.0, null) {}
+            public BuildingPosition(): this(0, null) {}
 
         }
 
@@ -43,7 +43,6 @@
         /// 0 - disabled (intended to be set by other mods)
         /// 1 - enabled
         /// 2 - enabled when a challenge is accomplished
-        /// ... others may follow
         /// default 1
         /// </summary>
         public int enabled=1;

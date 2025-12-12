@@ -23,7 +23,11 @@ namespace MultiLaunchpadMod
 
                 try
                 {
-                    if (filePath.FileExists() && !SFS.Parsers.Json.JsonWrapper.TryLoadJson<System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData>>(filePath, out __state))
+                    if (!filePath.FileExists())
+                    {
+                        __state.Add(new MultiLaunchpadMod.SpaceCenterData());
+                    }
+                    else if (!SFS.Parsers.Json.JsonWrapper.TryLoadJson<System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData>>(filePath, out __state))
                     {
                         UnityEngine.Debug.LogError("MultiLaunchpadMod: Solar system \"" + solarSystem.name + "\" has an invalid Alternate_Space_Center_Data.txt file");
                         __state.Clear();

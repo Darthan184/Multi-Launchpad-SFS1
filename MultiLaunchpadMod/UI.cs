@@ -161,6 +161,7 @@ namespace MultiLaunchpadMod
                     }
                     else
                     {
+                        if (selectedSpaceCenter.angle==null) SFS.Base.planetLoader.spaceCenter.angle=90;
                         SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height = (double)selectedSpaceCenter.position_LaunchPad.height;
                     }
                     SFS.Base.sceneLoader.LoadHubScene();

@@ -111,9 +111,9 @@ Specifies the name of an alternate location on the same body. If omitted will us
 
 0 - never enabled
 
-1 - always enabled (default value if this field is omitted)
+1 - always enabled
 
-2 - enabled when a challenge is accomplished. N.B. if there is a planet called "Earth", a 'return safely' challenge will only be counted when recovered on Earth. Otherwise it is counted when the rocket is recovered at the planet with the current launchpad.
+2 - enabled when a challenge is accomplished. N.B. if there is a planet called "Earth", a 'return safely' challenge will only be counted when recovered on Earth. Otherwise it is counted when the rocket is recovered at the planet with the current launchpad.  (default value if this field is omitted)
 
 **"challenge_id":**
 
@@ -131,7 +131,9 @@ The challenge id to be used with enabled=2, if omitted will be the "landed on pl
 
 **"angle":**
 
-The location on the planet (in degrees) of the space center (not fully implemented by SFS, location is, orientation is not), default 90.
+The location on the planet (in degrees) of the space center (not fully implemented by SFS, location is, orientation is not).
+If this field is omitted and position_LaunchPad or position_LaunchPad.height is omitted will attempt to find a sufficiently flat
+area. If this field is omitted and position_LaunchPad.height is specified, 90 will be used.
 
 **"position_LaunchPad":**
 
@@ -139,7 +141,7 @@ Position of the launch pad. If omitted will use default values for its fields:
 
     **"horizontalPosition"**
     
-    Horizontal position the launch pad relative to the space center (meters) +ve right, default 365
+    Horizontal position the launch pad relative to the space center (meters) +ve right, default 0
 
     **"height"**
     
