@@ -16,9 +16,9 @@ To specify details you will need to add an Alternate\_Space\_Center\_Data.txt fi
 If no Alternate\_Space\_Center\_Data.txt is supplied, a space centre definition will be generated for each significant planet that has
 terrain, with angle and height chosen automatically and always enabled.
 
-##Examples
+## Examples
 
-**Example 1**
+### Example 1
 
 Earth (two locations), Moon (multiple difficultlies) and Venus.
 
@@ -78,7 +78,7 @@ Earth (two locations), Moon (multiple difficultlies) and Venus.
 ]
 ```
 
-**Example 2**
+### Example 2
 
 The definition that I currently using for the Free Academic Space Agency missions.
 ```
@@ -139,7 +139,7 @@ The definition that I currently using for the Free Academic Space Agency mission
 ]
 ```
 
-**Example 3**
+### Example 3
 
 Most fields are optional and you can specify multiple planets with one definition. E.g. all significant planets with terrain,
 excluding Phobos, Deimos and Jupiter, with automatic height and angle selection, enabled when the land and return safely challenge
@@ -153,7 +153,7 @@ for that planet is completed.
 ]
 ```
 
-**Example 4**
+### Example 4
 
 You can also specify the challenge id that will enable the launchpad. E.g. all moons of Jupiter, with automatic height and angle
 selection, enabled when a flyby of the moon is completed. You will need the Custom Challenges mod to specify the flyby challenges.
