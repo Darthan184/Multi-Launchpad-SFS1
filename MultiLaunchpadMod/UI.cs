@@ -4,6 +4,14 @@ namespace MultiLaunchpadMod
 {
     public class UI
     {
+        #region "Private classes"
+            private class  _TerrainRange
+            {
+                public double minTerrain = double.MaxValue;
+                public double maxTerrain = double.MinValue;
+            }
+        #endregion
+
         #region "Private fields"
             // Create a GameObject for your window to attach to.
             private static UnityEngine.GameObject windowHolder;
@@ -68,6 +76,19 @@ namespace MultiLaunchpadMod
                 SwitchTo();
             }
 
+            private static _TerrainRange GetTerrainRange(SFS.WorldBase.Planet planet, double angleRadians, double hubOffset, double edgeOffset)
+            {
+                _TerrainRange result = new _TerrainRange();
+
+                for (double angle= angleRadians - edgeOffset; angle< angleRadians + edgeOffset*1.05; angle+=edgeOffset*0.1)
+                {
+                    double terrain= planet.GetTerrainHeightAtAngle(angle - hubOffset);
+                    if (result.minTerrain>terrain) result.minTerrain=terrain;
+                    if (result.maxTerrain<terrain) result.maxTerrain=terrain;
+                }
+                return result;
+            }
+
             private static void SwitchTo()
             {
                 string planetName = _planetName_Label.Text;
@@ -82,7 +103,6 @@ namespace MultiLaunchpadMod
                     MultiLaunchpadMod.SpaceCenterData selectedSpaceCenter =  MultiLaunchpadMod.SpaceCenterData.alternates[planetName][locationName];
                     MultiLaunchpadMod.SpaceCenterData.current = selectedSpaceCenter;
                     SFS.Base.planetLoader.spaceCenter.address = selectedSpaceCenter.address;
-                    SFS.Base.planetLoader.spaceCenter.angle = selectedSpaceCenter.angle;
                     SFS.Base.planetLoader.spaceCenter.position_LaunchPad.horizontalPosition = selectedSpaceCenter.position_LaunchPad.horizontalPosition;
 
                     if (selectedSpaceCenter.position_LaunchPad.height==null)
@@ -90,17 +110,54 @@ namespace MultiLaunchpadMod
                         SFS.WorldBase.Planet planet = SFS.Base.planetLoader.planets[planetName];
                         double edgeOffset = 50 / planet.Radius;
                         double hubOffset = selectedSpaceCenter.position_LaunchPad.horizontalPosition / planet.Radius;
-                        double minTerrain = double.MaxValue;
-                        double maxTerrain = double.MinValue;
-                        double angleRadians =  (selectedSpaceCenter.angle*System.Math.PI / 180);
+                        _TerrainRange range=null;
 
-                        for (double angle= angleRadians - edgeOffset; angle< angleRadians + edgeOffset*1.05; angle+=edgeOffset*0.1)
+                        if (selectedSpaceCenter.angle==null)
                         {
-                            double terrain= planet.GetTerrainHeightAtAngle(angle - hubOffset);
-                            if (minTerrain>terrain) minTerrain=terrain;
-                            if (maxTerrain<terrain) maxTerrain=terrain;
+                            double angleOffset;
+                            int counter=0;
+                            bool isFound=false;
+
+                            for (angleOffset=0.0;angleOffset<System.Math.PI / 180.0 && counter<1000; angleOffset+=edgeOffset, counter++)
+                            {
+                                double angleRadians = System.Math.PI/2.0+angleOffset;
+                                range=GetTerrainRange(planet, angleRadians, hubOffset, edgeOffset);
+
+                                if (range.maxTerrain-range.minTerrain<8)
+                                {
+                                    SFS.Base.planetLoader.spaceCenter.angle=angleRadians*180.0/System.Math.PI;
+                                    isFound=true;
+                                    break;
+                                }
+
+                                if (angleOffset!=0.0)
+                                {
+                                    angleRadians = System.Math.PI/2.0-angleOffset;
+                                    range=GetTerrainRange(planet, angleRadians, hubOffset, edgeOffset);
+
+                                    if (range.maxTerrain-range.minTerrain<8)
+                                    {
+                                        SFS.Base.planetLoader.spaceCenter.angle=angleRadians*180.0/System.Math.PI;
+                                        isFound=true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!isFound)
+                            {
+                                SFS.Base.planetLoader.spaceCenter.angle=90.0;
+                                range=GetTerrainRange(planet, System.Math.PI/2.0,hubOffset,edgeOffset);
+                            }
                         }
-                        SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height = System.Math.Max(minTerrain+8,maxTerrain);
+                        else
+                        {
+                            double angleRadians =  ((double)selectedSpaceCenter.angle*System.Math.PI / 180.0);
+                            range=GetTerrainRange(planet, angleRadians, hubOffset, edgeOffset);
+                            SFS.Base.planetLoader.spaceCenter.angle = (double)selectedSpaceCenter.angle;
+                        }
+
+                        SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height = System.Math.Max(range.minTerrain+8,range.maxTerrain);
                     }
                     else
                     {

@@ -56,7 +56,7 @@
         public string difficulty = "all";
 
         /// <summary>The location on the planet (in degrees) of the space center (not fully implemented by SFS, location is, orientation is not), default 90</summary>
-        public double angle = 90.0;
+        public double? angle = null;
 
         /// <summary>Position of the launch pad</summary>
         public BuildingPosition position_LaunchPad = new BuildingPosition();
