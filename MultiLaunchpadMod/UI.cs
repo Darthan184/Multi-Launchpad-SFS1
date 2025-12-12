@@ -90,21 +90,15 @@ namespace MultiLaunchpadMod
                         SFS.WorldBase.Planet planet = SFS.Base.planetLoader.planets[planetName];
                         double edgeOffset = 50 / planet.Radius;
                         double hubOffset = selectedSpaceCenter.position_LaunchPad.horizontalPosition / planet.Radius;
-                        double[] terrain= planet.GetTerrainHeightAtAngles
-                            (
-                                (selectedSpaceCenter.angle*System.Math.PI / 180) - edgeOffset - hubOffset
-                                ,(selectedSpaceCenter.angle*System.Math.PI / 180) -edgeOffset*0.5 - hubOffset
-                                ,(selectedSpaceCenter.angle*System.Math.PI / 180) - hubOffset
-                                ,(selectedSpaceCenter.angle*System.Math.PI / 180) +edgeOffset*0.5 - hubOffset
-                                ,(selectedSpaceCenter.angle*System.Math.PI / 180) +edgeOffset - hubOffset
-                            );
                         double minTerrain = double.MaxValue;
                         double maxTerrain = double.MinValue;
+                        double angleRadians =  (selectedSpaceCenter.angle*System.Math.PI / 180);
 
-                        foreach (double oneValue in terrain )
+                        for (double angle= angleRadians - edgeOffset; angle< angleRadians + edgeOffset*1.05; angle+=edgeOffset*0.1)
                         {
-                            if (minTerrain>oneValue) minTerrain=oneValue;
-                            if (maxTerrain<oneValue) maxTerrain=oneValue;
+                            double terrain= planet.GetTerrainHeightAtAngle(angle - hubOffset);
+                            if (minTerrain>terrain) minTerrain=terrain;
+                            if (maxTerrain<terrain) maxTerrain=terrain;
                         }
                         SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height = System.Math.Max(minTerrain+8,maxTerrain);
                     }

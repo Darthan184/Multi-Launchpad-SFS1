@@ -1,12 +1,18 @@
 # Multi-Launchpad-SFS1
 
-The mod adds support for alternate space centers to custom solar systems. In general, the planets that are expected to have an alternate space center should have a flat area at the top with the correct terrain altitude. If it doesn't (like the default solar system) it is possible to shift the location and height of the space center to find a flat-ish location but these tend to differ for different difficulties. As a result you will need to provide a space center for each difficulty unless you are lucky enough to have a flat area in the correct place.
+The mod adds support for alternate space centers to custom solar systems. In general, the planets that are expected to have an
+ alternate space center should have a flat area at the top with the correct terrain altitude. If it doesn't (like the default solar
+ system) it is possible to shift the location to find a flat-ish location but these may differ for different difficulties. You may
+ need to provide a space center for each difficulty. 
+ 
+The height can be specified manually or omitted, in which case one will be chosen automatically. The autmlatic height selection does
+not work very well if the slope is too large or the terrain is to rough.
 
 To specify them you need to add an Alternate_Space_Center_Data.txt file:
 
 ![File Directory](Images/Directory.png)
 
-The file is essentially a json array of space center definitions with a three of optional extra fields:
+Example 1:
 
 ```
 [
@@ -64,23 +70,42 @@ The file is essentially a json array of space center definitions with a three of
 ]
 ```
 
+Most fields are optional, you can specify multiple planets with one definition. E.g. all significant planets with terrain, excluding
+Phobos and Deimos, at the default angle and horizontal position with automatic height selection:
+```
+[
+    {
+      "enabled": 1
+      ,exclude :["Phobos","Deimos"]
+    }
+]
+```
+
+you can also specify the challenge id that will enable the launchpad.
+
 ## Fields 
 
 **"address":**
 
-Specifies the name of the planet where the space center is. If omitted will be for all planets with terrain. If an alternate launchpad is specfied more than once, the last one specified will be used.
+Specifies the name of the body where the space center is. If omitted will be for all significant bodies with terrain. If an alternate launchpad is specfied more than once, the last one specified will be used.
 
 **"inclInsignificant"**
 
-When no address is specified, include planets that are not marked as 'significant', default false.
+When no address is specified, include bodies that are not marked as 'significant', default false.
 
 **"exclude"**;
 
-When no address is specified, exclude planets in this array of names
+When no address is specified, exclude bodies in this array of names
+
+        
+**"primaries"**;
+
+When no address is specified, only include bodies with primaries  in this array of names
+
         
 **"location":**
 
-Specifies the name of an alternate location on the same planet. If omitted will use the name "(default)".
+Specifies the name of an alternate location on the same body. If omitted will use the name "(default)".
 
 **"enabled":**
 

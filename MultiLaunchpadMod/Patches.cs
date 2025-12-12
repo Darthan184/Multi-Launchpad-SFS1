@@ -43,9 +43,9 @@ namespace MultiLaunchpadMod
             System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData> expandableSpaceCenters=
                 new System.Collections.Generic.List<MultiLaunchpadMod.SpaceCenterData>();
 
-            // expand address:"*"
+            // expand address:""
             foreach (MultiLaunchpadMod.SpaceCenterData oneSpaceCenter in __state)
-                if (oneSpaceCenter.address=="*")
+                if (oneSpaceCenter.address=="")
                 {
                     expandableSpaceCenters.Add(oneSpaceCenter);
                 }
@@ -60,6 +60,11 @@ namespace MultiLaunchpadMod
                             onePlanet.data.hasTerrain
                             && (oneSpaceCenter.inclInsignificant || onePlanet.data.basics.significant)
                             && !oneSpaceCenter.exclude.Contains(onePlanet.codeName)
+                            &&
+                                (
+                                    oneSpaceCenter.primaries.Length==0
+                                    || (onePlanet.parentBody!=null && oneSpaceCenter.primaries.Contains(onePlanet.parentBody.codeName))
+                                )
                         )
                     {
                         MultiLaunchpadMod.SpaceCenterData newSpaceCenter = new MultiLaunchpadMod.SpaceCenterData();

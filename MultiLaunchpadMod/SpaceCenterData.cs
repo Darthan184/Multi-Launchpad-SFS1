@@ -23,16 +23,19 @@
 
         }
 
-        /// <summary>The name of the planet where the space center is, If omitted will be for all planets with terrain</summary>
+        /// <summary>The name of the body where the space center is, If omitted will be for all significant bodies with terrain</summary>
         public string address = "";
 
-        /// <summary>When no address is specified, include planets that are not marked as 'significant', default false</summary>
+        /// <summary>When no address is specified, include bodies that are not marked as 'significant', default false</summary>
         public bool inclInsignificant = false;
 
-        /// <summary>When no address is specified, exclude planets with these names</summary>
+        /// <summary>When no address is specified, exclude bodies with these names</summary>
         public string[] exclude = {};
 
-        /// <summary>The name of the location on the planet where the space center is</summary>
+        /// <summary>When no address is specified, only include bodies with primaries having these names</summary>
+        public string[] primaries = {};
+
+        /// <summary>The name of the location on the body where the space center is</summary>
         public string location = "(default)";
 
         /// <summary>
