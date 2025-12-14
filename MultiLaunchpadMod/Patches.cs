@@ -222,7 +222,7 @@ namespace MultiLaunchpadMod
                 }
 
                 // add or update the default space center and the current space center
-                if (!MultiLaunchpadMod.SpaceCenterData.alternates.ContainsKey(SFS.Base.planetLoader.spaceCenter.address))
+                if (! MultiLaunchpadMod.SpaceCenterData.alternates.ContainsKey(SFS.Base.planetLoader.spaceCenter.address))
                 {
                     MultiLaunchpadMod.SpaceCenterData.current = new MultiLaunchpadMod.SpaceCenterData();
                     MultiLaunchpadMod.SpaceCenterData.current.address =SFS.Base.planetLoader.spaceCenter.address;
@@ -244,8 +244,12 @@ namespace MultiLaunchpadMod
                 }
                 MultiLaunchpadMod.SpaceCenterData.current.enabled=1;
                 MultiLaunchpadMod.SpaceCenterData.current.angle=SFS.Base.planetLoader.spaceCenter.angle;
-                MultiLaunchpadMod.SpaceCenterData.current.position_LaunchPad.horizontalPosition= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.horizontalPosition;
-                MultiLaunchpadMod.SpaceCenterData.current.position_LaunchPad.height= SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height;
+                MultiLaunchpadMod.SpaceCenterData.current.position_LaunchPad =
+                    new MultiLaunchpadMod.SpaceCenterData.BuildingPosition
+                        (
+                            SFS.Base.planetLoader.spaceCenter.position_LaunchPad.horizontalPosition
+                            ,SFS.Base.planetLoader.spaceCenter.position_LaunchPad.height
+                        );
             }
         #endregion
     }
