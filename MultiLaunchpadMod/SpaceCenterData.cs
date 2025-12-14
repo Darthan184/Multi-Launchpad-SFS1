@@ -9,7 +9,10 @@
             /// <summary>Horizontal position the launch pad relative to the space center (meters) +ve right, default 0</summary>
             public double horizontalPosition=0.0;
 
-            /// <summary>Vertical position of the launch pad relative to the planet radius +ve up, if omitted attempt to find the best value</summary>
+            /// <summary>
+            /// Vertical position of the launch pad relative to the planet radius +ve up, if omitted attempt to find the best value
+            /// if null (not set) will be amended in memory after loading
+            /// </summary>
             public double? height=null;
 
             public BuildingPosition(double horizontalPosition_P, double? height_P)
@@ -54,11 +57,14 @@
         /// default "all"
         public string difficulty = "all";
 
-        /// <summary>The location on the planet (in degrees) of the space center (not fully implemented by SFS, location is, orientation is not), default 90</summary>
+        /// <summary>
+        /// The location on the planet (in degrees) of the space center (not fully implemented by SFS, location is, orientation is not), default 90
+        /// if null (not set) will be amended in memory after loading
+        /// </summary>
         public double? angle = null;
 
-        /// <summary>Position of the launch pad</summary>
-        public BuildingPosition position_LaunchPad = new BuildingPosition();
+        /// <summary>Position of the launch pad, if null (not set) will be created in memory after loading</summary>
+        public BuildingPosition position_LaunchPad = null;
 
         /// <summary>The current space center </summary>
         public static SpaceCenterData current;
