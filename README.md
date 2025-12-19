@@ -84,57 +84,38 @@ The definition that I currently using for the Free Academic Space Agency mission
 ```
 [
     {
-      "enabled": 2,
-      "address": "Moon",
-      "location": "FASA Moonbase",
-      "angle": 90.015
+        "enabled": 2
+        ,"excludes": ["Earth","Moon","Mars"]
     }
     ,{
-      "enabled": 2,
-      "address": "Mars",
-      "location": "FASA Mars Colony Left Pad",
-      "angle": 90.237
-     }
-    ,{
-      "enabled": 2,
-      "address": "Mars",
-      "location": "FASA Mars Colony Right Pad",
-      "angle": 90.222
+        "enabled": 2
+        ,"address": "Moon"
+        ,"location": "FASA Moonbase"
+        ,"angle": 90.015
+        ,"position_LaunchPad":
+        {
+            "horizontalPosition": 345.0
+        }
     }
     ,{
-      "enabled": 2,
-      "address": "Venus",
-      "angle": 90.0
+        "enabled": 2
+        ,"address": "Mars"
+        ,"location": "FASA Mars Colony Left Pad"
+        ,"angle": 90.237
+        ,"position_LaunchPad":
+        {
+            "horizontalPosition": 365.0
+        }
     }
     ,{
-      "enabled": 2,
-      "address": "Mercury",
-      "angle": 89.4
-    }
-    ,{
-      "enabled": 2,
-      "address": "Callisto",
-      "angle": 90.9
-    }
-    ,{
-      "enabled": 2,
-      "address": "Ganymede",
-      "angle": 90.1
-    }
-    ,{
-      "enabled": 2,
-      "address": "Europa",
-      "angle": 90.5
-    }
-    ,{
-      "enabled": 2,
-      "address": "Io",
-      "angle": 91.6
-    }
-    ,{
-      "enabled": 2,
-      "address": "Titan",
-      "angle": 90
+        "enabled": 2
+        ,"address": "Mars"
+        ,"location": "FASA Mars Colony Right Pad"
+        ,"angle": 90.222
+        ,"position_LaunchPad":
+        {
+            "horizontalPosition": 365.0
+        }
     }
 ]
 ```
